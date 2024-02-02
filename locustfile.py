@@ -13,7 +13,12 @@ class AdvancedLoadTest(HttpUser):
 
     @task
     def simulate_user_activity(self):
+        # Add more realistic tasks simulating user activity
+        # For example, logging in, performing actions, logging out, etc.
         pass
+
+def prompt_for_headless():
+    return click.confirm('Do you want to run Locust in headless mode?')
 
 @click.command()
 @click.option('--url', prompt='Enter the target URL', help='Target URL for load testing')
@@ -22,8 +27,7 @@ class AdvancedLoadTest(HttpUser):
 @click.option('--wait-time', type=int, prompt='Enter time between requests in seconds', help='Time between requests in seconds')
 @click.option('--spawn-rate', type=int, prompt='Enter spawn rate', help='User spawn rate per second')
 @click.option('--html-report', type=click.Path(), help='Path to save HTML report')
-@click.option('--headless', is_flag=True, help='Run Locust in headless mode')
-def run_locust(url, users, duration, wait_time, spawn_rate, html_report, headless):
+def run_locust(url, users, duration, wait_time, spawn_rate, html_report):
     AdvancedLoadTest.host = url
     AdvancedLoadTest.wait_time = between(wait_time, wait_time)
 
@@ -38,17 +42,19 @@ def run_locust(url, users, duration, wait_time, spawn_rate, html_report, headles
     try:
         logging.info('Starting the load test...')
 
+        headless_mode = prompt_for_headless()
+
         locust_cmd = ['locust', '-f', __file__, '--host', url, '--users', str(users),
                       '--spawn-rate', str(spawn_rate), '--run-time', f'{duration}m', '--html', filename]
 
-        if headless:
+        if headless_mode:
             locust_cmd.append('--headless')
 
-        subprocess.run(locust_cmd)
+        subprocess.run(locust_cmd, check=True)
 
         logging.info(f'Load test completed. HTML report saved at: {filename}')
-    except Exception as e:
-        logging.error(f'Error during load test: {str(e)}')
+    except subprocess.CalledProcessError as e:
+        logging.error(f'Error during load test: {e}')
 
 if __name__ == '__main__':
     run_locust()
