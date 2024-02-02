@@ -13,8 +13,6 @@ class AdvancedLoadTest(HttpUser):
 
     @task
     def simulate_user_activity(self):
-        # Add more realistic tasks simulating user activity
-        # For example, logging in, performing actions, logging out, etc.
         pass
 
 @click.command()
@@ -24,7 +22,8 @@ class AdvancedLoadTest(HttpUser):
 @click.option('--wait-time', type=int, prompt='Enter time between requests in seconds', help='Time between requests in seconds')
 @click.option('--spawn-rate', type=int, prompt='Enter spawn rate', help='User spawn rate per second')
 @click.option('--html-report', type=click.Path(), help='Path to save HTML report')
-def run_locust(url, users, duration, wait_time, spawn_rate, html_report):
+@click.option('--headless', is_flag=True, help='Run Locust in headless mode')
+def run_locust(url, users, duration, wait_time, spawn_rate, html_report, headless):
     AdvancedLoadTest.host = url
     AdvancedLoadTest.wait_time = between(wait_time, wait_time)
 
@@ -39,8 +38,13 @@ def run_locust(url, users, duration, wait_time, spawn_rate, html_report):
     try:
         logging.info('Starting the load test...')
 
-        subprocess.run(['locust', '-f', __file__, '--headless', '--host', url, '--users', str(users),
-                        '--spawn-rate', str(spawn_rate), '--run-time', f'{duration}m', '--html', filename])
+        locust_cmd = ['locust', '-f', __file__, '--host', url, '--users', str(users),
+                      '--spawn-rate', str(spawn_rate), '--run-time', f'{duration}m', '--html', filename]
+
+        if headless:
+            locust_cmd.append('--headless')
+
+        subprocess.run(locust_cmd)
 
         logging.info(f'Load test completed. HTML report saved at: {filename}')
     except Exception as e:
