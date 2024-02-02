@@ -13,23 +13,20 @@ class AdvancedLoadTest(HttpUser):
 
     @task
     def simulate_user_activity(self):
-        # Add more realistic tasks simulating user activity
-        # For example, logging in, performing actions, logging out, etc.
         pass
-
-def prompt_for_headless():
-    return click.confirm('Do you want to run Locust in headless mode?')
 
 @click.command()
 @click.option('--url', prompt='Enter the target URL', help='Target URL for load testing')
 @click.option('--users', type=int, prompt='Enter the number of users', help='Number of users to simulate')
 @click.option('--duration', type=int, prompt='Enter the test duration in minutes', help='Test duration in minutes')
-@click.option('--wait-time', type=int, prompt='Enter time between requests in seconds', help='Time between requests in seconds')
+@click.option('--wait-time-min', type=int, prompt='Enter minimum time between requests in seconds', help='Minimum time between requests in seconds')
+@click.option('--wait-time-max', type=int, prompt='Enter maximum time between requests in seconds', help='Maximum time between requests in seconds')
 @click.option('--spawn-rate', type=int, prompt='Enter spawn rate', help='User spawn rate per second')
 @click.option('--html-report', type=click.Path(), help='Path to save HTML report')
-def run_locust(url, users, duration, wait_time, spawn_rate, html_report):
+@click.option('--headless', is_flag=True, help='Run Locust in headless mode')
+def run_locust(url, users, duration, wait_time_min, wait_time_max, spawn_rate, html_report, headless):
     AdvancedLoadTest.host = url
-    AdvancedLoadTest.wait_time = between(wait_time, wait_time)
+    AdvancedLoadTest.wait_time = between(wait_time_min, wait_time_max)
 
     current_datetime = datetime.now().strftime('%d %B %Y, %I.%M%p')
     filename = current_datetime.replace(' ', '_').replace(',', '') + '_load_test_report.html'
@@ -42,12 +39,12 @@ def run_locust(url, users, duration, wait_time, spawn_rate, html_report):
     try:
         logging.info('Starting the load test...')
 
-        headless_mode = prompt_for_headless()
+        locust_cmd = [
+            'locust', '-f', __file__, '--host', url, '--users', str(users),
+            '--spawn-rate', str(spawn_rate), '--run-time', f'{duration}m', '--html', filename
+        ]
 
-        locust_cmd = ['locust', '-f', __file__, '--host', url, '--users', str(users),
-                      '--spawn-rate', str(spawn_rate), '--run-time', f'{duration}m', '--html', filename]
-
-        if headless_mode:
+        if headless:
             locust_cmd.append('--headless')
 
         subprocess.run(locust_cmd, check=True)
