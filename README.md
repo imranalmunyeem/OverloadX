@@ -2,10 +2,7 @@
 
 [![Locust](https://img.shields.io/badge/locust-17202C?style=for-the-badge&logo=locust&logoColor=white)](https://locust.io/) 
 [![Python](https://img.shields.io/badge/python-F7DF1E?style=for-the-badge&logo=python&logoColor=black)](https://www.python.org/) 
-
-[![VS Code](https://img.shields.io/badge/VS_Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)](https://code.visualstudio.com/)
-[![Mochawesome Reports](https://img.shields.io/badge/Mochawesome%20Reports-<COLOR>?style=for-the-badge&logo=mochawesome&logoColor=white)](https://www.npmjs.com/package/cypress-mochawesome-reporter)
-[![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)](https://github.com/features/actions) 
+[![PyCharm](https://img.shields.io/badge/pycharm-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)](https://www.jetbrains.com/pycharm/) 
 
 ## 📑 Table of Contents
 - [Introduction](#introduction)
