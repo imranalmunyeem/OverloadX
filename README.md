@@ -1,4 +1,4 @@
-# 💻 Automated Load Testing with Locust
+# 💻 OverloadX - Automated Load Testing with Locust
 
 [![Locust](https://img.shields.io/badge/locust-17202C?style=for-the-badge&logo=locust&logoColor=white)](https://locust.io/) 
 [![Python](https://img.shields.io/badge/python-F7DF1E?style=for-the-badge&logo=python&logoColor=black)](https://www.python.org/) 
